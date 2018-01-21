@@ -39,6 +39,8 @@ class QRCode:
         self.image_factory = image_factory
         if image_factory is not None:
             assert issubclass(image_factory, BaseImage)
+        #
+        self.debug = {'data_len': None, 'colors': None}
         self.clear()
 
     def clear(self):
@@ -278,6 +280,8 @@ class QRCode:
             diff_len = data_len - len(colors)
             if diff_len > 0:
                 colors = util.random_insert_seq(colors, [im.fill_color] * diff_len)
+        self.debug['data_len'] = data_len
+        self.debug['colors'] = colors
         ii = 0
         for r in range(self.modules_count):
             for c in range(self.modules_count):
