@@ -6,6 +6,8 @@ from six.moves import xrange
 
 from qrcode import base, exceptions
 
+from random import sample
+
 # QR encoding modes.
 MODE_NUMBER = 1 << 0
 MODE_ALPHA_NUM = 1 << 1
@@ -554,3 +556,10 @@ def create_data(version, error_correction, data_list):
             buffer.put(PAD1, 8)
 
     return create_bytes(buffer, rs_blocks)
+
+def random_insert_seq(lst, seq):
+    insert_locations = sample(range(len(lst) + len(seq)), len(seq))
+    inserts = dict(zip(insert_locations, seq))
+    lster = iter(lst)
+    return [inserts[pos] if pos in inserts else next(lster)
+            for pos in range(len(lst) + len(seq))]

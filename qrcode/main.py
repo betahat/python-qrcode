@@ -252,7 +252,7 @@ class QRCode:
             out.write('\n')
         out.flush()
 
-    def make_image(self, image_factory=None, **kwargs):
+    def make_image(self, image_factory=None, colors = None, **kwargs):
         """
         Make an image from the QR Code data.
 
@@ -273,10 +273,19 @@ class QRCode:
 
         im = image_factory(
             self.border, self.modules_count, self.box_size, **kwargs)
+        data_len = len([(r,c) for r in range(self.modules_count) for c in range(self.modules_count) if self.modules[r][c]])
+        if isinstance(colors, list):
+            diff_len = data_len - len(colors)
+            if diff_len > 0:
+                colors = util.random_insert_seq(colors, [im.fill_color] * diff_len)
+        ii = 0
         for r in range(self.modules_count):
             for c in range(self.modules_count):
                 if self.modules[r][c]:
+                    if colors is not None:
+                        im.fill_color = colors[ii]
                     im.drawrect(r, c)
+                    ii += 1
         return im
 
     def setup_timing_pattern(self):
